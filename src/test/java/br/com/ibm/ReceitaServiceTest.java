@@ -11,44 +11,47 @@ import br.com.ibm.domain.Arquivo;
 import br.com.ibm.services.ReceitaService;
 
 class ReceitaServiceTest {
-	Arquivo arquivoContasDadosCorretos = new Arquivo();
-	Arquivo arquivoContasDadosIncorretos = new Arquivo();
-	ReceitaService ReceitaService = new ReceitaService();
-	
-	@BeforeEach
-	public void setup() {		
-		arquivoContasDadosCorretos.setAgencia("0001");
-		arquivoContasDadosCorretos.setConta("000001");
-		arquivoContasDadosCorretos.setSaldo(0.01);
-		arquivoContasDadosCorretos.setStatus("A");
-		
-		arquivoContasDadosIncorretos.setAgencia("001");
-		arquivoContasDadosIncorretos.setConta("00001");
-		arquivoContasDadosIncorretos.setSaldo(0.01);		
-		arquivoContasDadosIncorretos.setStatus("C");
-	}
-
 	/* 
 	 Regras:
 	 Formato agencia deve possuir 4 dígitos (ex.:0000).Se null ou diferente de 4 ocorre erro.
      Formato conta deve possuir 6 dígitos (ex.:000000). Se null ou diferente de 6 ocorre erro.
      Tipos de status validos: A, I, B, P. Se null ou diferente, ocorre erro
-    */
+   */
+	Arquivo DadosCorretos = new Arquivo();
+	Arquivo DadosIncorretos = new Arquivo();
+	Arquivo DadosNulos = new Arquivo();
+	ReceitaService ReceitaService = new ReceitaService();
 	
+	@BeforeEach
+	public void setup() {		
+		DadosCorretos.setAgencia("0001");
+		DadosCorretos.setConta("000001");		
+		DadosCorretos.setStatus("A");
+		
+		DadosIncorretos.setAgencia("001");
+		DadosIncorretos.setConta("00001");				
+		DadosIncorretos.setStatus("C");
+		
+		DadosNulos.setAgencia(null);
+		DadosNulos.setConta(null);				
+		DadosNulos.setStatus(null);		
+	}
+
+		
 	@Test
 	public void validaContaDadosCorretos() throws RuntimeException, InterruptedException  {
-		assertTrue(ReceitaService.atualizarConta(arquivoContasDadosCorretos.getAgencia(), arquivoContasDadosCorretos.getConta(), arquivoContasDadosCorretos.getSaldo(), arquivoContasDadosCorretos.getStatus()));
-		assertEquals(arquivoContasDadosCorretos.getAgencia().length(), (4));
-		assertEquals(arquivoContasDadosCorretos.getConta().length(), (6));
-		assertEquals(arquivoContasDadosCorretos.getStatus(), ("A"));		
+		assertTrue(ReceitaService.atualizarConta(DadosCorretos.getAgencia(), DadosCorretos.getConta(), DadosCorretos.getSaldo(), DadosCorretos.getStatus()));
+		assertEquals(DadosCorretos.getAgencia().length(), (4));
+		assertEquals(DadosCorretos.getConta().length(), (6));
+		assertEquals(DadosCorretos.getStatus(), ("A"));		
 	}
 
 	@Test
 	public void validaContaDadosIncorretos() throws RuntimeException, InterruptedException  {
-		assertFalse(ReceitaService.atualizarConta(arquivoContasDadosIncorretos.getAgencia(), arquivoContasDadosIncorretos.getConta(), arquivoContasDadosIncorretos.getSaldo(), arquivoContasDadosIncorretos.getStatus()));
-		assertNotEquals(arquivoContasDadosIncorretos.getAgencia().length(), (4));
-		assertNotEquals(arquivoContasDadosIncorretos.getConta().length(), (6));
-		assertNotEquals(arquivoContasDadosIncorretos.getStatus(), ("A"));		
+		assertFalse(ReceitaService.atualizarConta(DadosIncorretos.getAgencia(), DadosIncorretos.getConta(), DadosIncorretos.getSaldo(), DadosIncorretos.getStatus()));
+		assertNotEquals(DadosIncorretos.getAgencia().length(), (4));
+		assertNotEquals(DadosIncorretos.getConta().length(), (6));
+		assertNotEquals(DadosIncorretos.getStatus(), ("A"));		
 	}
 
 	@Rule
@@ -56,9 +59,8 @@ class ReceitaServiceTest {
 
 	@Test
 	public void validaDadosNulos() throws Exception {
-	    expectedEx.expect(RuntimeException.class);
-	    expectedEx.expectMessage("Employee ID is null");
-	    ReceitaService.atualizarConta(null, null, 0.01, null);
+	    expectedEx.expect(RuntimeException.class);	    
+	    ReceitaService.atualizarConta(DadosNulos.getAgencia(), DadosNulos.getConta(), DadosNulos.getSaldo(), DadosNulos.getResultado());
 	}
 	
 }
